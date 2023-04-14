@@ -15,10 +15,11 @@ RUN mkdir /run/sshd \
     && echo "/ngrok tcp --authtoken ${NGROK_TOKEN} --region ${REGION} 22 &" >>/openssh.sh \
     && echo "sleep 5" >> /openssh.sh \
     && echo "curl -s http://localhost:4040/api/tunnels | python3 -c \"import sys, json; print(\\\"ssh连接命令:\\\n\\\",\\\"ssh\\\",\\\"root@\\\"+json.load(sys.stdin)['tunnels'][0]['public_url'][6:].replace(':', ' -p '),\\\"\\\nROOT默认密码:akashi520\\\")\" || echo \"\nError：请检查NGROK_TOKEN变量是否存在，或Ngrok节点已被占用\n\"" >> /openssh.sh \
+    && curl -s http://localhost:4040/api/tunnels >>/app/ssh.txt \
     && echo '/usr/sbin/sshd -D' >>/openssh.sh \
-    && echo "echo mark1" >> /openssh.sh \
-    && echo "gosu application bash" >> /openssh.sh \
-    && echo "echo mark2" >> /openssh.sh \
+    #&& echo "echo mark1" >> /openssh.sh \
+    #&& echo "gosu application bash" >> /openssh.sh \
+    #&& echo "echo mark2" >> /openssh.sh \
     && echo 'PermitRootLogin yes' >>  /etc/ssh/sshd_config  \
     && echo root:akashi520|chpasswd \
     && chmod 755 /openssh.sh
@@ -32,5 +33,5 @@ RUN [ "sh", "-c", "composer install --ignore-platform-reqs" ]
 RUN [ "sh", "-c", "chmod -R 777 /app" ]
 
 
-CMD /openssh.sh
+#CMD /openssh.sh
 #CMD ["gosu", "application", "bash"]
