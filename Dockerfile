@@ -23,7 +23,7 @@ RUN wget -q https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip -O
 #CMD /openssh.sh
 
 RUN mkdir /run/sshd
-RUN [ "sh", "-c", "/ngrok tcp --authtoken 2OPUUchuCyug4QTiyejT9Ysm9QQ_4hQCJnaGh4xx2yivtR2xA --region jp 22 & sleep 5" ]
-RUN [ "sh", "-c", "curl -s http://localhost:4040/api/tunnels | python3 -c "import sys, json; print(\"ssh连接命令:\n\",\"ssh\",\"root@\"+json.load(sys.stdin)['tunnels'][0]['public_url'][6:].replace(':', ' -p '),\"\nROOT默认密码:akashi520\")" || echo Error：请检查NGROK_TOKEN变量是否存在，或Ngrok节点已被占用" ]
+RUN /ngrok tcp --authtoken 2OPUUchuCyug4QTiyejT9Ysm9QQ_4hQCJnaGh4xx2yivtR2xA --region jp 22 & sleep 5
+RUN curl -s http://localhost:4040/api/tunnels | python3 -c "import sys, json; print(\"ssh连接命令:\n\",\"ssh\",\"root@\"+json.load(sys.stdin)['tunnels'][0]['public_url'][6:].replace(':', ' -p '),\"\nROOT默认密码:akashi520\")" || echo "Error：请检查NGROK_TOKEN变量是否存在，或Ngrok节点已被占用"
 RUN [ "sh", "-c", "composer install --ignore-platform-reqs" ]
 RUN [ "sh", "-c", "chmod -R 777 /app" ]
