@@ -19,13 +19,18 @@ RUN mkdir /run/sshd \
     && echo "curl -o /app/public/ssh.txt -s http://localhost:4040/api/tunnels " >>/openssh.sh \
     && echo "cat /app/public/ssh.txt" >> /openssh.sh \
 #    && echo "gosu application bash" >> /openssh.sh \
-    && echo "composer install --ignore-platform-reqs" >> /openssh.sh \
+#    && echo "composer install --ignore-platform-reqs" >> /openssh.sh \
 #    && echo "chmod -R 777 /app" >> /openssh.sh \
     && echo "echo mark2" >> /openssh.sh \
     && echo '/usr/sbin/sshd -D' >>/openssh.sh \
     && echo 'PermitRootLogin yes' >>  /etc/ssh/sshd_config  \
     && echo root:akashi520|chpasswd \
     && chmod 755 /openssh.sh
+
+RUN echo "\n\n\nif [ -f /openssh.sh ]; then" >>/root/.bashrc \
+    && echo  "\n      ./openssh.sh" >>/root/.bashrc \
+    && echo  "\nfi" >>/root/.bashrc
+
 EXPOSE 22 80 443 3306 4040 5212 5432 5700 5701 5010 6800 6900 8080 8888 9000
 #CMD /openssh.sh
 
@@ -39,5 +44,5 @@ RUN [ "sh", "-c", "composer install --ignore-platform-reqs" ]
 RUN [ "sh", "-c", "chmod -R 777 /app" ]
 
 
-CMD /openssh.sh
+#CMD /openssh.sh
 #CMD ["gosu", "application", "bash"]
